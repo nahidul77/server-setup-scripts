@@ -340,22 +340,22 @@ if [ -n "$DOMAIN_NAME" ] && [ -n "$PHP_VERSION" ]; then
     cat >/etc/nginx/sites-available/"$DOMAIN_NAME" <<-EOF
 server {
    listen 80;
-   server_name "$DOMAIN_NAME" www."$DOMAIN_NAME";
-   return 301 https://"$DOMAIN_NAME"\$request_uri;
+   server_name $DOMAIN_NAME www.$DOMAIN_NAME;
+   return 301 https://$DOMAIN_NAME\$request_uri;
 }
 server {
     listen 443 ssl;
-    server_name "$DOMAIN_NAME" www."$DOMAIN_NAME";
+    server_name $DOMAIN_NAME www.$DOMAIN_NAME;
 
-    root /var/www/"$DOMAIN_NAME"/public;
+    root /var/www/$DOMAIN_NAME/public;
 
-    ssl_certificate /etc/letsencrypt/live/"$DOMAIN_NAME"/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/"$DOMAIN_NAME"/privkey.pem; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
-    access_log /var/log/nginx/"$DOMAIN_NAME"-access.log;
-    error_log  /var/log/nginx/"$DOMAIN_NAME"-error.log error;
+    access_log /var/log/nginx/$DOMAIN_NAME-access.log;
+    error_log  /var/log/nginx/$DOMAIN_NAME-error.log error;
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-Content-Type-Options "nosniff";
