@@ -272,11 +272,15 @@ if [ -n "$MYSQL_DB_NAME" ] && [ -n "$MYSQL_DB_USERNAME" ] && [ -n "$MYSQL_DB_PAS
     # Create a SQL script
 
     cat >configure-mysql.sql <<-EOF
-GRANT ALL ON *.* TO '$MYSQL_DB_USERNAME'@'localhost' IDENTIFIED BY '$MYSQL_DB_PASSWORD' WITH GRANT OPTION;
+CREATE USER '$MYSQL_DB_USERNAME'@'%' IDENTIFIED BY '$MYSQL_DB_PASSWORD';
+
+CREATE DATABASE $MYSQL_DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+GRANT ALL ON $MYSQL_DB_NAME.* TO '$MYSQL_DB_USERNAME'@'%';
 
 FLUSH PRIVILEGES;
 
-CREATE DATABASE "$MYSQL_DB_NAME" CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+exit
 EOF
 
     sudo mysql -u root <configure-mysql.sql
