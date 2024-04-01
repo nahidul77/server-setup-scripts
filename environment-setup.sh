@@ -131,7 +131,6 @@ fi
 print_color "green" "$CONCATED_TEXT"
 
 # Final confirmation
-
 read -r -p "Are you sure you want to continue? (yes/no): " isConfirmed
 
 isConfirmed=$(to_lowercase "$isConfirmed")
@@ -143,6 +142,10 @@ else
     echo "Aborting..."
     exit 1
 fi
+
+############
+## Server Setup script Start here.
+############
 
 #++++++++ Update & Upgrade the system +++++++++++++++++++++
 
