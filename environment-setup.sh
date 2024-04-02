@@ -237,7 +237,9 @@ if [ -n "$PHP_VERSION" ]; then
 
     sudo apt -y install php"$PHP_VERSION"
 
-    sudo apt install -y php"$PHP_VERSION"-{fpm,gd,mbstring,mysql,pgsql,xml,xmlrpc,opcache,cli,zip,soap,intl,bcmath,curl,imagick,common,imap,readline}
+    sudo apt install -y php"$PHP_VERSION"-{fpm,gd,mbstring,mysql,pgsql,redis,xml,xmlrpc,opcache,cli,zip,soap,intl,bcmath,curl,imagick,common,imap,readline}
+
+    sudo apt remove --purge apache2
 
     sudo update-alternatives --config php
 
@@ -339,6 +341,11 @@ if [ -n "$DOMAIN_NAME" ] && [ -n "$PHP_VERSION" ]; then
     sudo snap install --classic certbot
 
     sudo certbot --nginx -d "$DOMAIN_NAME" -d www."$DOMAIN_NAME"
+
+    cat >/var/www/"$DOMAIN_NAME"/public/index.php <<-EOF
+<?php
+echo phpinfo();
+EOF
 
     cat >/etc/nginx/sites-available/"$DOMAIN_NAME" <<-EOF
 server {
