@@ -193,7 +193,7 @@ if [ -n "$DOMAIN_NAME" ]; then
 
     sudo ufw allow 'Nginx Full'
 
-    sudo mkdir -p /var/www/"$DOMAIN_NAME"
+    sudo mkdir -p /var/www/"$DOMAIN_NAME"/public
 
     sudo touch /etc/nginx/sites-available/"$DOMAIN_NAME"
 
@@ -394,6 +394,8 @@ server {
     }
 }
 EOF
+
+    sudo systemctl reload nginx
 
     print_color "green" "Certbot & SSL Setup Completed..."
 
