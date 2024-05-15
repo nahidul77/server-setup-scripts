@@ -349,10 +349,21 @@ EOF
 
     cat >/etc/nginx/sites-available/"$DOMAIN_NAME" <<-EOF
 server {
-   listen 80;
-   server_name $DOMAIN_NAME www.$DOMAIN_NAME;
-   return 301 https://$DOMAIN_NAME\$request_uri;
+    if (\$host = www.$DOMAIN_NAME) {
+        return 301 https://\$host\$request_uri;
+    } # managed by Certbot
+
+
+    if (\$host = $DOMAIN_NAME) {
+        return 301 https://\$host\$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name $DOMAIN_NAME www.$DOMAIN_NAME;
+    return 404; # managed by Certbot
 }
+
 server {
     listen 443 ssl;
     server_name $DOMAIN_NAME www.$DOMAIN_NAME;
