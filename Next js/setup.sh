@@ -186,7 +186,7 @@ if [ -n "$DOMAIN_NAME" ]; then
 server{
     listen 80;
     listen [::]:80;
-    server_name "$DOMAIN_NAME" www."$DOMAIN_NAME";
+    server_name $DOMAIN_NAME www.$DOMAIN_NAME;
     location / {
        proxy_pass http://localhost:3001;
        proxy_http_version 1.1;
