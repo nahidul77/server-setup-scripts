@@ -205,7 +205,7 @@ server {
         root /var/www/html;
         index index.html index.htm index.nginx-debian.html;
 
-        server_name "$DOMAIN_NAME" www."$DOMAIN_NAME";
+        server_name $DOMAIN_NAME www.$DOMAIN_NAME;
 
         location / {
                 try_files \$uri \$uri/ =404;
