@@ -405,6 +405,7 @@ server {
     }
 }
 EOF
+    sudo rm /etc/nginx/sites-enabled/default
 
     sudo systemctl reload nginx
 

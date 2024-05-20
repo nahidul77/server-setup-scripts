@@ -395,6 +395,8 @@ server {
 }
 EOF
 
+    sudo rm /etc/nginx/sites-enabled/default
+
     sudo systemctl reload nginx
 
     print_color "green" "Certbot & SSL Setup Completed..."

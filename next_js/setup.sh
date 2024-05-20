@@ -183,18 +183,18 @@ if [ -n "$DOMAIN_NAME" ]; then
     sudo touch /etc/nginx/sites-available/"$DOMAIN_NAME"
 
     cat >/etc/nginx/sites-available/"$DOMAIN_NAME" <<-EOF
-server{
-    listen 80;
-    listen [::]:80;
-    server_name $DOMAIN_NAME www.$DOMAIN_NAME;
-    location / {
-       proxy_pass http://localhost:3001;
-       proxy_http_version 1.1;
-       proxy_set_header Upgrade \$http_upgrade;
-       proxy_set_header Connection 'upgrade';
-       proxy_set_header Host \$host;
-       proxy_cache_bypass \$http_upgrade;
-    }
+server {
+        listen 80;
+        listen [::]:80;
+
+        root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name $DOMAIN_NAME www.$DOMAIN_NAME;
+
+        location / {
+                try_files \$uri \$uri/ =404;
+        }
 }
 EOF
 
@@ -302,6 +302,50 @@ if [ -n "$DOMAIN_NAME" ]; then
     sudo snap install --classic certbot
 
     sudo certbot --nginx -d "$DOMAIN_NAME" -d www."$DOMAIN_NAME"
+
+    cat >/etc/nginx/sites-available/"$DOMAIN_NAME" <<-EOF
+server {
+    if (\$host = www.$DOMAIN_NAME) {
+        return 301 https://\$host\$request_uri;
+    } # managed by Certbot
+
+
+    if (\$host = $DOMAIN_NAME) {
+        return 301 https://\$host\$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name $DOMAIN_NAME www.$DOMAIN_NAME;
+    return 404; # managed by Certbot
+}
+
+server {
+    listen 443 ssl;
+    server_name $DOMAIN_NAME www.$DOMAIN_NAME;
+
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+    access_log /var/log/nginx/$DOMAIN_NAME-access.log;
+    error_log  /var/log/nginx/$DOMAIN_NAME-error.log error;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    location / {
+       proxy_pass http://localhost:3001;
+       proxy_http_version 1.1;
+       proxy_set_header Upgrade \$http_upgrade;
+       proxy_set_header Connection 'upgrade';
+       proxy_set_header Host \$host;
+       proxy_cache_bypass \$http_upgrade;
+    }
+
+}
+EOF
 
     sudo rm /etc/nginx/sites-enabled/default
 
